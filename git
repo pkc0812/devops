@@ -1,1 +1,58 @@
 # Git
+#
+# # Install Git in Debian Linux distributions like Ubuntu
+sudo apt-get update
+sudo apt-get install -y git
+
+# Install Git in RedHast distributions like RHEl, CentOs
+sudo yum update
+sudo yum install -y git
+
+# Show's the current git version
+git --version
+
+# List global configuration for the current user
+git config --global --list
+
+# Set the name and email to the git global configuration
+git config --global user.email "you@example.com"
+git config --global user.name "Your Name"
+
+# To Verify the previous commands
+git config --global --list
+
+# Check for .gitconfig file in user's home directory
+ls -la ~
+
+# Look the git global configuration written to this file at the user's home directory
+cat ~/.gitconfig
+
+# Create a directory
+mkdir myfirstrepo
+
+# Change the working directory to myrepo
+cd myfirstrepo
+
+# Create the index.html file and insert the Hello World text to the html file
+echo "Hello World" > index.html
+
+ls -la
+
+# View the index.html file
+cat index.html
+
+# Check the status of the index.html file. Returns an error saying a not a git repository
+git status
+
+# Create an empty Git repository
+git init
+
+# Look for the .git directory in the current directory
+ls -la
+
+# Check the status of the index.html file. index.html will be a untracked file
+git status
+
+# Add the file to the staging area
+git add index.html
+
