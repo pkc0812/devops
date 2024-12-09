@@ -56,3 +56,28 @@ git status
 # Add the file to the staging area
 git add index.html
 
+
+# Check status again. index.html will be in the "Changes to be committed section"
+git status
+
+# Remove the file from the staging area to the working directory
+git rm --cached index.html
+
+# Verify by checking git status
+git status
+
+# Adds all the files in working directory to the staging area
+git add .
+
+# Check status again to verify the last command
+git status
+
+# List all your commits. As of now, it will be empty
+git log
+
+# Moves all your changes in staging area to the local repository
+git commit -m "Initial Commit"
+
+# Your last commit should be listed here
+git log
+
