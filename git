@@ -81,3 +81,87 @@ git commit -m "Initial Commit"
 # Your last commit should be listed here
 git log
 
+
+
+# Create some dummy files
+echo "Hi" > index.html
+echo "commit2" > help.txt
+
+# Check status of those files
+git status
+
+# Add the index.html file to the staging area
+git add index.html
+
+# Check status again
+git status
+
+# Add the text to the index.html
+echo "This is my 2nd line" >> index.html
+
+# Check the status again
+git status
+
+# Show changes between last two commits
+git diff
+
+# Append new text to the help.txt file
+echo "new line" >> help.txt
+
+# Add all the files to the staging area
+git add .
+
+# Check status again
+git status
+
+# Make your second commit
+git commit -m "Second Commit"
+
+# Check status again
+git status
+
+# Verify your commit using git log
+git log
+
+# Check changes between two commits by passing commit ID
+git diff COMMIT_ID_1 COMMIT_ID_2
+
+# Check the changes made in each commit
+git log -p
+
+# The following prints the commit message alone with commit ID
+git log --oneline
+
+# Add one more change
+echo "Completely new change" > index.html
+
+# Check the status
+git status
+
+# Print the file's content
+cat index.html
+
+# List the stashes in your repository
+git stash list
+
+# Stash the changes in your working directory
+git stash
+
+# List the stashes that you currently have
+git stash list
+
+# Print the content of the file again to check
+cat index.html
+
+# Check the git status
+git status
+
+# Move the changes from stash to the working directory
+git stash pop
+
+# Check if the stash still exists
+git stash list
+
+# See the modifications applied by the stash in your working directory
+git status
+
