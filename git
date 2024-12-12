@@ -165,3 +165,73 @@ git stash list
 # See the modifications applied by the stash in your working directory
 git status
 
+
+#####
+#
+Working with Remote repository 
+
+[root@ip-192-168-10-144 dev-git]# ls
+file.txt  index.html
+[root@ip-192-168-10-144 dev-git]# git status
+On branch master
+nothing to commit, working tree clean
+[root@ip-192-168-10-144 dev-git]# git log --oneline
+8758549 (HEAD -> master)  msg
+2f99cb9 third commit
+950041a second commit
+6e76046 Initial Commit
+[root@ip-192-168-10-144 dev-git]# git remote add origin https://github.com/kloudvsol/dec-dev
+[root@ip-192-168-10-144 dev-git]#
+
+
+
+[root@ip-192-168-10-144 dev-git]# git remote -v
+origin  https://github.com/kloudvsol/dec-dev (fetch)
+origin  https://github.com/kloudvsol/dec-dev (push)
+[root@ip-192-168-10-144 dev-git]#
+
+### Git push to sync data from local to remote repo 
+
+[root@ip-192-168-10-144 dev-git]# git push -u origin master
+Username for 'https://github.com': kloudvsol
+Password for 'https://kloudvsol@github.com':
+Enumerating objects: 13, done.
+Counting objects: 100% (13/13), done.
+Compressing objects: 100% (6/6), done.
+Writing objects: 100% (13/13), 1.01 KiB | 1.01 MiB/s, done.
+Total 13 (delta 0), reused 0 (delta 0), pack-reused 0
+To https://github.com/kloudvsol/dec-dev
+ * [new branch]      master -> master
+branch 'master' set up to track 'origin/master'.
+[root@ip-192-168-10-144 dev-git]#
+
+#### GIT PULL to pull datat from remote repo
+
+[root@ip-192-168-10-144 dev-git]# git pull
+remote: Enumerating objects: 5, done.
+remote: Counting objects: 100% (5/5), done.
+remote: Compressing objects: 100% (3/3), done.
+remote: Total 3 (delta 1), reused 0 (delta 0), pack-reused 0 (from 0)
+Unpacking objects: 100% (3/3), 977 bytes | 977.00 KiB/s, done.
+From https://github.com/kloudvsol/dec-dev
+   ba32ccf..380b781  master     -> origin/master
+Updating ba32ccf..380b781
+Fast-forward
+ index.html | 1 +
+ 1 file changed, 1 insertion(+)
+[root@ip-192-168-10-144 dev-git]# ll
+total 8
+-rw-r--r-- 1 root root 10 Dec 11 01:58 file.txt
+-rw-r--r-- 1 root root 99 Dec 12 02:23 index.html
+[root@ip-192-168-10-144 dev-git]# cat index.html
+Hello World
+
+new line
+line 2
+
+git change
+
+change made from local git repo
+changes made from gitub
+[root@ip-192-168-10-144 dev-git]#
+
