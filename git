@@ -405,4 +405,106 @@ To https://github.com/kloudvsol/dec-dev
    ad10a1f..a6ded35  master -> master
 branch 'master' set up to track 'origin/master'.
 
+###
+#
+#GIT BRANCH
+#
+[root@server ~]# ls
+carvilla-v1.0  dev-git  mygit
+carvilla.zip   devops
+[root@server ~]# cd dev-git
+[root@server dev-git]# ls
+file.txt  index.html
+[root@server dev-git]# git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+nothing to commit, working tree clean
+[root@server dev-git]#
+[root@server dev-git]#
+
+## list branch 
+[root@server dev-git]# git branch
+* master
+
+# create branch 
+[root@server dev-git]# git branch newbranch
+[root@server dev-git]# git branch
+* master
+  newbranch
+
+# delete branch 
+#
+[root@server dev-git]# git branch -D newbranch
+Deleted branch newbranch (was a6ded35).
+[root@server dev-git]# git branch
+* master
+[root@server dev-git]#
+
+
+# change branch 
+#
+[root@server dev-git]# git branch
+* master
+  newbranch
+
+
+[root@server dev-git]# git checkout newbranch
+Switched to branch 'newbranch'
+
+
+[root@server dev-git]# git branch
+  master
+* newbranch
+
+# change branch 
+#
+[root@server dev-git]# git branch
+* master
+  newbranch
+
+
+[root@server dev-git]# git checkout newbranch
+Switched to branch 'newbranch'
+
+
+[root@server dev-git]# git branch
+  master
+* newbranch
+
+# change branch 
+#
+[root@server dev-git]# git branch
+* master
+  newbranch
+
+
+[root@server dev-git]# git checkout newbranch
+Switched to branch 'newbranch'
+
+
+[root@server dev-git]# git branch
+  master
+* newbranch
+
+# Merge branch 
+#
+[root@server dev-git]# git checkout master
+Switched to branch 'master'
+Your branch is up to date with 'origin/master'.
+[root@server dev-git]#
+[root@server dev-git]#
+[root@server dev-git]# git branch
+* master
+  newbranch
+
+
+[root@server dev-git]# git merge newbranch
+Updating a6ded35..58d1fc6
+Fast-forward
+ index.html | 2 ++
+ 1 file changed, 2 insertions(+)
+[root@server dev-git]#
+
+
 
