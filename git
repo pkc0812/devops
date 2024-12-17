@@ -507,4 +507,126 @@ Fast-forward
 [root@server dev-git]#
 
 
+###
+#Git Revert 
+#
+[root@server ~]# ls
+carvilla-v1.0  dev-git  mygit
+carvilla.zip   devops
+[root@server ~]# cd dev-git/
+[root@server dev-git]# git status
+On branch newbranch
+Your branch is up to date with 'origin/newbranch'.
+
+nothing to commit, working tree clean
+[root@server dev-git]#
+
+
+
+[root@server dev-git]# cat file.txt
+new file
+
+new line from git local
+
+changed by local
+changed by remote
+changes made to check revert
+[root@server dev-git]#
+[root@server dev-git]#
+[root@server dev-git]# git status
+On branch newbranch
+Your branch is up to date with 'origin/newbranch'.
+
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   file.txt
+
+no changes added to commit (use "git add" and/or "git commit -a")
+[root@server dev-git]#
+
+
+[root@server dev-git]# git log --oneline
+cff3375 (HEAD -> newbranch) my-commit
+58d1fc6 (origin/newbranch, master)  msg
+a6ded35 (origin/master) msg
+b683e59 msg
+ad10a1f Update file.txt
+1685f18  msg
+380b781 Update index.html
+ba32ccf msg
+8758549  msg
+2f99cb9 third commit
+950041a second commit
+[root@server dev-git]# git revert cff3375
+hint: Waiting for your editor to close the file...[newbranch 38fe6b3] Revert "my-commit"
+ 1 file changed, 1 deletion(-)
+[root@server dev-git]#
+[root@server dev-git]#
+[root@server dev-git]# cat file.txt
+new file
+
+new line from git local
+
+changed by local
+changed by remote
+[root@server dev-git]#
+
+###
+#Revert on the revert commit 
+[root@server dev-git]# git log --oneline
+38fe6b3 (HEAD -> newbranch) Revert "my-commit"
+cff3375 my-commit
+58d1fc6 (origin/newbranch, master)  msg
+a6ded35 (origin/master) msg
+b683e59 msg
+ad10a1f Update file.txt
+1685f18  msg
+380b781 Update index.html
+ba32ccf msg
+8758549  msg
+2f99cb9 third commit
+[root@server dev-git]# git revert 38fe6b3
+hint: Waiting for your editor to close the file...[newbranch d1af54c] Revert "Revert "my-commit""
+ 1 file changed, 1 insertion(+)
+[root@server dev-git]# cat file.txt
+new file
+
+new line from git local
+
+changed by local
+changed by remote
+changes made to check revert
+[root@server dev-git]#
+
+
+# git reset 
+#
+[root@server dev-git]# git log --oneline
+d1af54c (HEAD -> newbranch) Revert "Revert "my-commit""
+38fe6b3 Revert "my-commit"
+cff3375 my-commit
+58d1fc6 (origin/newbranch, master)  msg
+a6ded35 (origin/master) msg
+b683e59 msg
+ad10a1f Update file.txt
+1685f18  msg
+380b781 Update index.html
+ba32ccf msg
+[root@server dev-git]# git reset cff3375
+[root@server dev-git]#
+
+
+[root@server dev-git]# git log --oneline
+58d1fc6 (HEAD -> newbranch, origin/newbranch, master)  msg
+a6ded35 (origin/master) msg
+b683e59 msg
+ad10a1f Update file.txt
+1685f18  msg
+380b781 Update index.html
+ba32ccf msg
+8758549  msg
+2f99cb9 third commit
+950041a second commit
+6e76046 Initial Commit
 
