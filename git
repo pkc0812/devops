@@ -630,3 +630,15 @@ ba32ccf msg
 950041a second commit
 6e76046 Initial Commit
 
+# Hard reset 
+#
+[root@server dev-git]# git reset 58d1fc6 --hard
+HEAD is now at 58d1fc6  msg
+[root@server dev-git]#
+[root@server dev-git]# cat file.txt
+new file
+
+new line from git local
+
+changed by local
+changed by remote
