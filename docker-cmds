@@ -1,0 +1,141 @@
+# Install docker
+sudo curl -sS https://get.docker.com/ | sh
+sudo usermod -aG docker ${USER}
+
+# Logout
+exit
+
+# Ensure docker is started and enabled as a service
+sudo systemctl start docker
+sudo systemctl enable docker
+
+# Check docker version
+docker --version
+
+# View details of docker installation
+docker info
+
+# List docker images
+docker image ls
+
+# List docker containers
+docker container ls
+
+# Run a container from an image
+docker run hello-world
+
+# List docker containers
+docker container ls
+
+# Can't find container? List all docker containers (including stopped)
+docker container ls -a
+
+# List all docker container IDs
+docker container ls -aq
+
+# List docker images
+docker image ls
+
+# Pull a docker image and rerun image list command
+docker pull ubuntu
+
+# List docker images
+docker image ls
+
+# Run a ubuntu container (Image pulled automatically)
+docker run -it --name ubuntu ubuntu
+# Install apache server
+>   apt-get update
+>   apt-get install -y apache2 curl net-tools
+>   service apache2 status
+>   echo 'Hello World' > /var/www/html/index.html
+>   service apache2 start
+>   netstat -plnt
+>   curl localhost
+>   ifconfig
+>   curl 172.17.0.2
+>   exit
+
+# From docker host, curl containers IP
+curl 172.17.0.2
+
+# Can't connect? Check container status.
+docker container ls -a
+
+# Start the container
+docker container start ubuntu
+
+# Check container's status again
+docker container ls -a
+
+# curl containers IP again
+curl 172.17.0.2
+
+# Is IP changed? check by inspecting the container
+docker inspect ubuntu
+
+# Too much info.? Filter your outputs
+docker inspect ubuntu -f '{{.NetworkSettings.IPAddress}}'
+docker inspect ubuntu -f '{{json .NetworkSettings.Networks}}'
+
+# Attach to container and check if apache is running. If not, start it.
+docker attach ubuntu
+>   service apache2 status
+>   service apache2 start
+# If exited now, the container will be stopped and even if started back, apache process won't auto-start
+# Instead of exit, just detach the container
+PRESS Ctrl-P and Ctrl-Q one after another
+
+# Check container's status
+docker container ls -a
+
+# curl containers IP now
+curl 172.17.0.2
+
+# Let's save this container as an image and replicate further
+# Stop container
+docker container stop ubuntu
+
+# Check container's status
+docker container ls -a
+
+# Save container as a new image (Created image with entrypoint to start apache server automatically)
+docker commit -c "ENTRYPOINT apachectl -D FOREGROUND" ubuntu myapache
+
+# List docker images
+docker image ls
+
+# Launch a new container from new image in detached mode but still interactive
+docker run -itd --name apache1 myapache
+
+# Check container's status (Notice difference between old and new container's COMMAND column)
+docker container ls -a
+
+# Get new containers IP and curl it (Apache server is running by default)
+docker inspect apache1 -f '{{.NetworkSettings.IPAddress}}'
+curl 172.17.0.2
+
+# Get you docker host's private IP and public IP
+ifconfig
+curl ifconfig.co
+
+# Check the listening ports of your docker host
+netstat -plnt
+
+# Did you realize? The container and host are in two different networks.
+# Only the host can access the container network and it can't be accessed remotely.
+# To make it publicly accessible, bind the ports of the host and the container
+# Unfortunately, it can't be done on a running container with docker
+
+# Start a new container with port binding
+docker run -itd --name apache2 -p 80:80 myapache
+
+# Check container's status (Notice difference between old and new container's PORTS column)
+docker container ls -a
+
+# Check the listening ports of your docker host
+netstat -plnt
+
+# curl the localhost of your docker host
+curl localhost
+
