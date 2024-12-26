@@ -791,3 +791,54 @@ fe8d8d8e0c25   myapache   "/bin/sh -c 'apachec…"   7 minutes ago        Up 7 m
 80/tcp -> [::]:8080
 80/tcp -> [::]:8081
 
+
+###
+Docker exec 
+
+# Start a new container with port binding
+docker run -itd --name apache2 -p 80:80 myapache
+
+
+# Check container's status (Notice difference between old and new container's PORTS column)
+docker container ls -a
+
+# Attach to your new container to check logs
+docker attach apache2
+
+# Not working? check container status
+docker container ls -a
+
+# Start the container again and use docker logs
+docker container start apache2
+docker logs apache2
+
+
+# Uh-oh! Only the stdout of apache server is shown. We need to enter into the container to get the access logs and There's a way.
+docker exec -it apache2 /bin/bash
+>   cat /var/log/apache2/access.log
+>   exit
+
+# Simple commands are also possible
+docker exec -it apache2 tail -f /var/log/apache2/access.log
+
+# Want even more simple? Run this
+docker exec -it apache2 netstat -plnt
+
+# Delete the new container
+docker container rm apache2
+
+# Denied? Do it forcefully.
+docker container rm -f apache2
+
+# Check container status
+docker container ls -a
+
+# Force kill the old apache container
+docker container kill apache1
+
+# Check container status again
+docker container ls -a
+
+# Too tired to remove all containers? There's a bash shortcut
+# WARNING: This removes all containers. Don't worry, your image is still there.
+docker container rm -f $(docker container ls -aq)
