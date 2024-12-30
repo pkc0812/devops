@@ -156,4 +156,115 @@ docker rm -f a1
 docker run -itd -p 80:80 --name a1 myapache
 curl localhost:80
 
+vim Dockerfile
+FROM ubuntu:18.04
+LABEL name=apache maintainer=YOUR_NAME
+ENV HELLO="WORLD"
+RUN  apt-get update && apt-get install -y apache2 curl net-tools
+COPY ./index.html /var/www/html/index.html
+ENTRYPOINT apachectl -D FOREGROUND
+EXPOSE 80
+
+docker build -t myapache .
+
+docker image inspect myapache
+
+docker run -itd --name a3 myapache
+
+docker exec -it a3 bash
+echo $HELLO
+exit
+
+
+[root@server myapache-dir]# docker run -itd --name a4 -e HELLO=YOURNAME -e TEST=yes myapache
+b092045afd401d7d7ad4c046f8588e3ef72b91f56f3991027fe6049fec588cdc
+[root@server myapache-dir]# docker exec -it a4 bash                root@b092045afd40:/# echo $HELLO
+YOURNAME
+root@b092045afd40:/# echo $TEST
+yes
+
+# Diff btween cmd and entrypoint 
+
+# cat dockerfile
+
+FROM centos
+
+CMD ["echo", "Hello from CMD"]
+
+
+
+# docker build -t hello .
+[+] Building 6.2s (5/5) FINISHED                    docker:default
+ => [internal] load build definition from dockerfile          0.0s
+ => => transferring dockerfile: 82B                           0.0s
+ => [internal] load metadata for docker.io/library/centos:la  0.3s
+ => [internal] load .dockerignore                             0.0s
+ => => transferring context: 2B                               0.0s
+ => [1/1] FROM docker.io/library/centos:latest@sha256:a27fd8  5.8s
+ => => resolve docker.io/library/centos:latest@sha256:a27fd8  0.0s
+ => => sha256:a1801b843b1bfaf77c501e7a6d3f709401 529B / 529B  0.0s
+ => => sha256:5d0da3dc976460b72c77d94c8a1ad0 2.14kB / 2.14kB  0.0s
+ => => sha256:a1d0c75327776413fa0db9ed3adc 83.52MB / 83.52MB  1.2s
+ => => sha256:a27fd8080b517143cbbbab9dfb7c8571c4 762B / 762B  0.0s
+ => => extracting sha256:a1d0c75327776413fa0db9ed3adcdbadedc  4.4s
+ => exporting to image                                        0.0s
+ => => exporting layers                                       0.0s
+ => => writing image sha256:ae13110aaaf296774fec6ec1e44841a2  0.0s
+ => => naming to docker.io/library/hello                      0.0s
+
+[root@server myapache-dir]# docker image ls
+REPOSITORY   TAG       IMAGE ID       CREATED         SIZE
+myapache     latest    1d63ca04e4a3   9 minutes ago   210MB
+<none>       <none>    2f1d13401a91   3 days ago      210MB
+<none>       <none>    daa4dac26e33   3 days ago      210MB
+<none>       <none>    d800c03aff1a   3 days ago      210MB
+hello        latest    ae13110aaaf2   3 years ago     231MB
+
+
+[root@server myapache-dir]# docker run hello
+Hello from CMD
+
+[root@server myapache-dir]# docker run hello hostname
+332e89a48d47
+
+
+# cat dockerfile
+
+FROM centos
+
+ENTRYPOINT ["echo", "Hello from CMD"]
+
+
+# docker build -t hello .
+[+] Building 0.2s (5/5) FINISHED                    docker:default
+ => [internal] load build definition from dockerfile          0.0s
+ => => transferring dockerfile: 89B                           0.0s
+ => [internal] load metadata for docker.io/library/centos:la  0.1s
+ => [internal] load .dockerignore                             0.0s
+ => => transferring context: 2B                               0.0s
+ => CACHED [1/1] FROM docker.io/library/centos:latest@sha256  0.0s
+ => exporting to image                                        0.0s
+ => => exporting layers                                       0.0s
+ => => writing image sha256:99a6fc951872b6950cbcb777ec53a013  0.0s
+ => => naming to docker.io/library/hello                      0.0s
+[root@server myapache-dir]#
+
+
+# docker image ls
+REPOSITORY   TAG       IMAGE ID       CREATED          SIZE
+myapache     latest    1d63ca04e4a3   13 minutes ago   210MB
+<none>       <none>    2f1d13401a91   3 days ago       210MB
+<none>       <none>    daa4dac26e33   3 days ago       210MB
+<none>       <none>    d800c03aff1a   3 days ago       210MB
+hello        latest    99a6fc951872   3 years ago      231MB
+<none>       <none>    ae13110aaaf2   3 years ago      231MB
+[root@server myapache-dir]#
+
+[root@server myapache-dir]# docker run hello
+Hello from CMD
+
+
+# docker run hello hostname
+Hello from CMD hostname
+
 
