@@ -1,0 +1,52 @@
+i
+
+[root@server ~]# docker image ls
+REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
+myapache     latest    1d63ca04e4a3   24 hours ago   210MB
+<none>       <none>    2f1d13401a91   4 days ago     210MB
+<none>       <none>    daa4dac26e33   4 days ago     210MB
+<none>       <none>    d800c03aff1a   4 days ago     210MB
+hello        latest    99a6fc951872   3 years ago    231MB
+<none>       <none>    ae13110aaaf2   3 years ago    231MB
+[root@server ~]# docker tag myapache:latest myawspk/mydec2024:myimage
+[root@server ~]#
+[root@server ~]# docker image ls
+REPOSITORY          TAG       IMAGE ID       CREATED        SIZE
+myapache            latest    1d63ca04e4a3   24 hours ago   210MB
+myawspk/mydec2024   myimage   1d63ca04e4a3   24 hours ago   210MB
+<none>              <none>    2f1d13401a91   4 days ago     210MB
+<none>              <none>    daa4dac26e33   4 days ago     210MB
+<none>              <none>    d800c03aff1a   4 days ago     210MB
+hello               latest    99a6fc951872   3 years ago    231MB
+<none>              <none>    ae13110aaaf2   3 years ago    231MB
+
+[root@server ~]# docker push myawspk/mydec2024:myimage
+The push refers to repository [docker.io/myawspk/mydec2024]
+d6de141be38d: Preparing
+3ebdcca4a847: Preparing
+548a79621a42: Preparing
+denied: requested access to the resource is denied
+[root@server ~]#
+[root@server ~]#
+[root@server ~]# docker login
+Log in with your Docker ID or email address to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com/ to create one.
+You can log in with your password or a Personal Access Token (PAT). Using a limited-scope PAT grants better security and is required for organizations using SSO. Learn more at https://docs.docker.com/go/access-tokens/
+
+Username: myawspk
+Password:
+WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+[root@server ~]#
+
+
+[root@server ~]# docker push myawspk/mydec2024:myimage
+The push refers to repository [docker.io/myawspk/mydec2024]
+d6de141be38d: Pushed
+3ebdcca4a847: Pushed
+548a79621a42: Mounted from library/ubuntu
+myimage: digest: sha256:7de87d6814dd6df529dc12c17d4e401e71ca39b9cfbc6907badcc4a23b28bf30 size: 949
+[root@server ~]#
+

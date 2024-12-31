@@ -1,0 +1,122 @@
+i
+
+[root@server ~]# docker image ls
+REPOSITORY   TAG       IMAGE ID       CREATED        SIZE
+myapache     latest    1d63ca04e4a3   24 hours ago   210MB
+<none>       <none>    2f1d13401a91   4 days ago     210MB
+<none>       <none>    daa4dac26e33   4 days ago     210MB
+<none>       <none>    d800c03aff1a   4 days ago     210MB
+hello        latest    99a6fc951872   3 years ago    231MB
+<none>       <none>    ae13110aaaf2   3 years ago    231MB
+[root@server ~]# docker tag myapache:latest myawspk/mydec2024:myimage
+[root@server ~]#
+[root@server ~]# docker image ls
+REPOSITORY          TAG       IMAGE ID       CREATED        SIZE
+myapache            latest    1d63ca04e4a3   24 hours ago   210MB
+myawspk/mydec2024   myimage   1d63ca04e4a3   24 hours ago   210MB
+<none>              <none>    2f1d13401a91   4 days ago     210MB
+<none>              <none>    daa4dac26e33   4 days ago     210MB
+<none>              <none>    d800c03aff1a   4 days ago     210MB
+hello               latest    99a6fc951872   3 years ago    231MB
+<none>              <none>    ae13110aaaf2   3 years ago    231MB
+
+[root@server ~]# docker push myawspk/mydec2024:myimage
+The push refers to repository [docker.io/myawspk/mydec2024]
+d6de141be38d: Preparing
+3ebdcca4a847: Preparing
+548a79621a42: Preparing
+denied: requested access to the resource is denied
+[root@server ~]#
+[root@server ~]#
+[root@server ~]# docker login
+Log in with your Docker ID or email address to push and pull images from Docker Hub. If you don't have a Docker ID, head over to https://hub.docker.com/ to create one.
+You can log in with your password or a Personal Access Token (PAT). Using a limited-scope PAT grants better security and is required for organizations using SSO. Learn more at https://docs.docker.com/go/access-tokens/
+
+Username: myawspk
+Password:
+WARNING! Your password will be stored unencrypted in /root/.docker/config.json.
+Configure a credential helper to remove this warning. See
+https://docs.docker.com/engine/reference/commandline/login/#credentials-store
+
+Login Succeeded
+[root@server ~]#
+
+
+[root@server ~]# docker push myawspk/mydec2024:myimage
+The push refers to repository [docker.io/myawspk/mydec2024]
+d6de141be38d: Pushed
+3ebdcca4a847: Pushed
+548a79621a42: Mounted from library/ubuntu
+myimage: digest: sha256:7de87d6814dd6df529dc12c17d4e401e71ca39b9cfbc6907badcc4a23b28bf30 size: 949
+[root@server ~]#
+
+
+[root@server ~]# docker system prune -af
+Deleted Images:
+untagged: myapache:latest
+untagged: myawspk/mydec2024:myimage
+untagged: myawspk/mydec2024@sha256:7de87d6814dd6df529dc12c17d4e401e71ca39b9cfbc6907badcc4a23b28bf30
+deleted: sha256:1d63ca04e4a357785b4202e1ab3047999ad42d96bc2b94060279e97b0f1cac86
+untagged: hello:latest
+deleted: sha256:99a6fc951872b6950cbcb777ec53a0133033a8d6032fcb8b25645744d5430303
+
+Deleted build cache objects:
+j4zk55uyha6t5rm8b8f7wr52n
+p7kj80jm0qrmwzi3t4zs4902e
+r7uvb12jfgq2rx55xa6ch5mgq
+g2b60mdc67h4cosamzcvh3t2v
+
+Total reclaimed space: 146.5MB
+[root@server ~]# docker image ls
+REPOSITORY   TAG       IMAGE ID   CREATED   SIZE
+[root@server ~]#
+[root@server ~]#
+
+
+
+[root@server ~]# docker pull myawspk/mydec2024:myimage
+myimage: Pulling from myawspk/mydec2024
+7c457f213c76: Pull complete
+026bd048c47b: Pull complete
+dba099cc7366: Pull complete
+Digest: sha256:7de87d6814dd6df529dc12c17d4e401e71ca39b9cfbc6907badcc4a23b28bf30
+Status: Downloaded newer image for myawspk/mydec2024:myimage
+docker.io/myawspk/mydec2024:myimage
+[root@server ~]# docker image ls
+REPOSITORY          TAG       IMAGE ID       CREATED        SIZE
+myawspk/mydec2024   myimage   1d63ca04e4a3   24 hours ago   210MB
+[root@server ~]#
+[root@server ~]#
+
+
+[root@server ~]# docker pull ubuntu
+Using default tag: latest
+latest: Pulling from library/ubuntu
+de44b265507a: Pull complete
+Digest: sha256:80dd3c3b9c6cecb9f1667e9290b3bc61b78c2678c02cbdae5f0fea92cc6734ab
+Status: Downloaded newer image for ubuntu:latest
+docker.io/library/ubuntu:latest
+[root@server ~]# docker image ls
+REPOSITORY          TAG       IMAGE ID       CREATED        SIZE
+myawspk/mydec2024   myimage   1d63ca04e4a3   24 hours ago   210MB
+ubuntu              latest    b1d9df8ab815   5 weeks ago    78.1MB
+[root@server ~]#
+
+
+[root@server ~]# docker tag ubuntu myawspk/mydec2024:myubuntu
+[root@server ~]#
+
+[root@server ~]# docker image ls
+REPOSITORY          TAG        IMAGE ID       CREATED        SIZE
+myawspk/mydec2024   myimage    1d63ca04e4a3   24 hours ago   210MB
+ubuntu              latest     b1d9df8ab815   5 weeks ago    78.1MB
+myawspk/mydec2024   myubuntu   b1d9df8ab815   5 weeks ago    78.1MB
+[root@server ~]#
+[root@server ~]#
+[root@server ~]# docker push myawspk/mydec2024:myubuntu
+The push refers to repository [docker.io/myawspk/mydec2024]
+687d50f2f6a6: Mounted from library/ubuntu
+myubuntu: digest: sha256:708de84aa9d3d12bca9510c05eecf1ac05e3f31983b264c6b4be3dc9248aa72b size: 529
+[root@server ~]#
+
+
