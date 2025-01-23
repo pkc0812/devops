@@ -1,0 +1,333 @@
+REff ansible adhoc reff https://docs.ansible.com/ansible/latest/command_guide/intro_adhoc.html
+
+# Install ansible on the ansible server VM 
+
+[root@server ~]# yum install ansible
+Last metadata expiration check: 1 day, 23:58:23 ago on Tue Jan 21 02:09:40 2025.
+Dependencies resolved.
+================================================================================
+ Package          Arch       Version                      Repository       Size
+================================================================================
+Installing:
+ ansible          noarch     8.3.0-1.amzn2023.0.1         amazonlinux      32 M
+Installing dependencies:
+ ansible-core     x86_64     2.15.3-1.amzn2023.0.4        amazonlinux     2.5 M
+ sshpass          x86_64     1.09-6.amzn2023.0.1          amazonlinux      28 k
+
+Transaction Summary
+================================================================================
+Install  3 Packages
+
+Total download size: 35 M
+Installed size: 529 M
+Is this ok [y/N]: y
+Downloading Packages:
+(1/3): sshpass-1.09-6.amzn2023.0.1.x86_64.rpm   570 kB/s |  28 kB     00:00
+(2/3): ansible-core-2.15.3-1.amzn2023.0.4.x86_6 6.5 MB/s | 2.5 MB     00:00
+(3/3): ansible-8.3.0-1.amzn2023.0.1.noarch.rpm   24 MB/s |  32 MB     00:01
+--------------------------------------------------------------------------------
+Total                                            24 MB/s |  35 MB     00:01
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+
+
+####
+
+ansible Version check 
+
+[root@server ~]# ansible --version
+ansible [core 2.15.3]
+  config file = None
+  configured module search path = ['/root/.ansible/plugins/modules', '/usr/share/ansible/plugins/modules']
+  ansible python module location = /usr/lib/python3.9/site-packages/ansible
+  ansible collection location = /root/.ansible/collections:/usr/share/ansible/collections
+  executable location = /usr/bin/ansible
+  python version = 3.9.16 (main, Jul  5 2024, 00:00:00) [GCC 11.4.1 20230605 (Red Hat 11.4.1-2)] (/usr/bin/python3.9)
+  jinja version = 3.1.4
+  libyaml = True
+[root@server ~]#
+
+### 
+Ansible addhoc cmds test 
+
+[root@server ~]# cd /etc/ansible/
+[root@server ansible]# ls
+roles
+[root@server ansible]#
+
+
+
+$ sudo  vi /etc/ansible/hosts
+Insert client machines ip address into the inventory file:
+
+ansible host file
+Simply we put client machine ip address here. You can create custom inventory file if you do not want to use default hosts file.
+
+Perform Ping test from Master to Client machines
+Ansible contains various modules to manage IT infrastructure.  Here, we will use ping module to check connection status between master and client node as follows,
+
+
+[root@server ansible]# cat hosts
+[myserver]
+192.168.10.159
+
+
+$ ansible  all -m ping 
+ansible ping test 
+Finally, client machine can be accessed from master node through ansible.
+
+
+[root@server ansible]# ansible myserver -m ping
+[WARNING]: Platform linux on host 192.168.10.159 is using the discovered Python
+interpreter at /usr/bin/python3.9, but future installation of another Python
+interpreter could change the meaning of that path. See
+https://docs.ansible.com/ansible-
+core/2.15/reference_appendices/interpreter_discovery.html for more information.
+192.168.10.159 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3.9"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+[root@server ansible]#
+
+### Adding wrong IP to check error 
+
+[root@server ansible]# cat hosts
+[myserver]
+192.168.10.159
+192.168.10.150
+[root@server ansible]#
+
+[root@server ansible]# ansible myserver -m ping
+[WARNING]: Platform linux on host 192.168.10.159 is using the discovered Python
+interpreter at /usr/bin/python3.9, but future installation of another Python
+interpreter could change the meaning of that path. See
+https://docs.ansible.com/ansible-
+core/2.15/reference_appendices/interpreter_discovery.html for more information.
+192.168.10.159 | SUCCESS => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3.9"
+    },
+    "changed": false,
+    "ping": "pong"
+}
+192.168.10.150 | UNREACHABLE! => {
+    "changed": false,
+    "msg": "Failed to connect to the host via ssh: ssh: connect to host 192.168.10.150 port 22: No route to host",
+    "unreachable": true
+}
+
+
+
+### Command module 
+
+[root@server ~]# ansible all -m command -a hostname
+[WARNING]: Platform linux on host 192.168.10.159 is using the discovered Python
+interpreter at /usr/bin/python3.9, but future installation of another Python
+interpreter could change the meaning of that path. See
+https://docs.ansible.com/ansible-
+core/2.15/reference_appendices/interpreter_discovery.html for more information.
+192.168.10.159 | CHANGED | rc=0 >>
+client
+[WARNING]: Platform linux on host 192.168.10.149 is using the discovered Python
+interpreter at /usr/bin/python3.9, but future installation of another Python
+interpreter could change the meaning of that path. See
+https://docs.ansible.com/ansible-
+core/2.15/reference_appendices/interpreter_discovery.html for more information.
+192.168.10.149 | CHANGED | rc=0 >>
+server
+192.168.10.150 | UNREACHABLE! => {
+    "changed": false,
+    "msg": "Failed to connect to the host via ssh: ssh: connect to host 192.168.10.150 port 22: No route to host",
+    "unreachable": true
+}
+
+
+[root@server ~]# ansible all -m command -a  "yum install wget -y "
+[WARNING]: Platform linux on host 192.168.10.159 is using the discovered Python
+interpreter at /usr/bin/python3.9, but future installation of another Python
+interpreter could change the meaning of that path. See
+https://docs.ansible.com/ansible-
+core/2.15/reference_appendices/interpreter_discovery.html for more information.
+192.168.10.159 | CHANGED | rc=0 >>
+Amazon Linux 2023 repository                     38 kB/s | 3.6 kB     00:00
+Amazon Linux 2023 Kernel Livepatch repository    31 kB/s | 2.9 kB     00:00
+Package wget-1.21.3-1.amzn2023.0.4.x86_64 is already installed.
+Dependencies resolved.
+Nothing to do.
+Complete!
+[WARNING]: Platform linux on host 192.168.10.149 is using the discovered Python
+interpreter at /usr/bin/python3.9, but future installation of another Python
+interpreter could change the meaning of that path. See
+https://docs.ansible.com/ansible-
+core/2.15/reference_appendices/interpreter_discovery.html for more information.
+192.168.10.149 | CHANGED | rc=0 >>
+Amazon Linux 2023 repository                     33 kB/s | 3.6 kB     00:00
+Amazon Linux 2023 Kernel Livepatch repository    29 kB/s | 2.9 kB     00:00
+Package wget-1.21.3-1.amzn2023.0.4.x86_64 is already installed.
+Dependencies resolved.
+Nothing to do.
+Complete!
+192.168.10.150 | UNREACHABLE! => {
+    "changed": false,
+    "msg": "Failed to connect to the host via ssh: ssh: connect to host 192.168.10.150 port 22: No route to host",
+    "unreachable": true
+}
+[root@server ~]#
+
+
+### Ansible copy module 
+
+[root@server ~]# cat /root/myfile.txt
+myfile data   to check s3 versioning
+[root@server ~]# vi myfile.txt
+[root@server ~]#  cat /tmp/myfile.txt
+cat: /tmp/myfile.txt: No such file or directory
+[root@server ~]# ansible all -m copy -a "src=/root/myfile.txt dest=/tmp"
+[WARNING]: Platform linux on host 192.168.10.159 is using the discovered Python
+interpreter at /usr/bin/python3.9, but future installation of another Python
+interpreter could change the meaning of that path. See
+https://docs.ansible.com/ansible-
+core/2.15/reference_appendices/interpreter_discovery.html for more information.
+192.168.10.159 | CHANGED => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3.9"
+    },
+    "changed": true,
+    "checksum": "702eb664fdb93b85c2cef502f86a0c705f15f23e",
+    "dest": "/tmp/myfile.txt",
+    "gid": 0,
+    "group": "root",
+    "md5sum": "783024cae351216207d9fd7e7f7bda4b",
+    "mode": "0644",
+    "owner": "root",
+    "secontext": "unconfined_u:object_r:admin_home_t:s0",
+    "size": 38,
+    "src": "/root/.ansible/tmp/ansible-tmp-1737599904.7462804-16910-35218304317010/source",
+    "state": "file",
+    "uid": 0
+}
+[WARNING]: Platform linux on host 192.168.10.149 is using the discovered Python
+interpreter at /usr/bin/python3.9, but future installation of another Python
+interpreter could change the meaning of that path. See
+https://docs.ansible.com/ansible-
+core/2.15/reference_appendices/interpreter_discovery.html for more information.
+192.168.10.149 | CHANGED => {
+    "ansible_facts": {
+        "discovered_interpreter_python": "/usr/bin/python3.9"
+    },
+    "changed": true,
+    "checksum": "702eb664fdb93b85c2cef502f86a0c705f15f23e",
+    "dest": "/tmp/myfile.txt",
+    "gid": 0,
+    "group": "root",
+    "md5sum": "783024cae351216207d9fd7e7f7bda4b",
+    "mode": "0644",
+    "owner": "root",
+    "secontext": "unconfined_u:object_r:admin_home_t:s0",
+    "size": 38,
+    "src": "/root/.ansible/tmp/ansible-tmp-1737599904.7369616-16911-106882949861852/source",
+    "state": "file",
+    "uid": 0
+}
+192.168.10.150 | UNREACHABLE! => {
+    "changed": false,
+    "msg": "Failed to connect to the host via ssh: ssh: connect to host 192.168.10.150 port 22: No route to host",
+    "unreachable": true
+}
+[root@server ~]#
+[root@server ~]#
+[root@server ~]#  cat /tmp/myfile.txt
+myfile data   to check s3 versioning
+[root@server ~]#
+
+#### ansible fetch module example -- 
+
+[root@server ~]# ansible all -m fetch -a "src=/tmp/myfile.txt dest=/root/mydata"
+192.168.10.159 | CHANGED => {
+    "changed": true,
+    "checksum": "828abbd576c76a4ebb5289f0e476a4564eb227d6",
+    "dest": "/root/mydata/192.168.10.159/tmp/myfile.txt",
+    "md5sum": "77bf463b4cb6c5d795afa49246649abc",
+    "remote_checksum": "828abbd576c76a4ebb5289f0e476a4564eb227d6",
+    "remote_md5sum": null
+}
+192.168.10.149 | CHANGED => {
+    "changed": true,
+    "checksum": "828abbd576c76a4ebb5289f0e476a4564eb227d6",
+    "dest": "/root/mydata/192.168.10.149/tmp/myfile.txt",
+    "md5sum": "77bf463b4cb6c5d795afa49246649abc",
+    "remote_checksum": "828abbd576c76a4ebb5289f0e476a4564eb227d6",
+    "remote_md5sum": null
+}
+192.168.10.150 | FAILED! => {
+    "changed": false,
+    "file": "/tmp/myfile.txt",
+    "msg": "Failed to connect to the host via ssh: ssh: connect to host 192.168.10.150 port 22: No route to host"
+}
+[root@server ~]#
+
+
+[root@server ~]# cd mydata/
+[root@server mydata]# ll
+total 0
+drwxr-xr-x. 3 root root 17 Jan 23 02:46 192.168.10.149
+drwxr-xr-x. 3 root root 17 Jan 23 02:46 192.168.10.159
+[root@server mydata]#
+[root@server mydata]#
+[root@server mydata]#
+[root@server mydata]#
+[root@server mydata]# cd 192.168.10.149
+[root@server 192.168.10.149]# ll
+total 0
+drwxr-xr-x. 2 root root 24 Jan 23 02:46 tmp
+[root@server 192.168.10.149]# cd tmp/
+[root@server tmp]# ll
+total 4
+-rw-r--r--. 1 root root 48 Jan 23 02:46 myfile.txt
+[root@server tmp]# cd ..
+[root@server 192.168.10.149]# cd ..
+[root@server mydata]# ll
+total 0
+drwxr-xr-x. 3 root root 17 Jan 23 02:46 192.168.10.149
+drwxr-xr-x. 3 root root 17 Jan 23 02:46 192.168.10.159
+[root@server mydata]# cd 192.168.10.159
+[root@server 192.168.10.159]# ll
+total 0
+drwxr-xr-x. 2 root root 24 Jan 23 02:46 tmp
+[root@server 192.168.10.159]# cd tmp/
+[root@server tmp]# ll
+total 4
+-rw-r--r--. 1 root root 48 Jan 23 02:46 myfile.txt
+[root@server tmp]#
+
+
+### 
+Shell module 
+
+[root@server tmp]# ansible all -m shell -a pwd
+[WARNING]: Platform linux on host 192.168.10.159 is using the discovered Python
+interpreter at /usr/bin/python3.9, but future installation of another Python
+interpreter could change the meaning of that path. See
+https://docs.ansible.com/ansible-
+core/2.15/reference_appendices/interpreter_discovery.html for more information.
+192.168.10.159 | CHANGED | rc=0 >>
+/root
+[WARNING]: Platform linux on host 192.168.10.149 is using the discovered Python
+interpreter at /usr/bin/python3.9, but future installation of another Python
+interpreter could change the meaning of that path. See
+https://docs.ansible.com/ansible-
+core/2.15/reference_appendices/interpreter_discovery.html for more information.
+192.168.10.149 | CHANGED | rc=0 >>
+/root
+192.168.10.150 | UNREACHABLE! => {
+    "changed": false,
+    "msg": "Failed to connect to the host via ssh: ssh: connect to host 192.168.10.150 port 22: No route to host",
+    "unreachable": true
+}
+[root@server tmp]#
+
