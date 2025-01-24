@@ -1,0 +1,139 @@
+# Reff : https://docs.ansible.com/ansible/latest/collections/all_plugins.html
+
+ What is an Ansible Playbook?
+An Ansible playbook is a file that contains a set of instructions that Ansible can use to automate tasks on remote hosts. Playbooks are written in YAML, a human-readable markup language.
+
+A playbook typically consists of one or more plays, a collection of tasks run in sequence. Each task is a single instruction that Ansible can execute, such as installing a package, configuring a service, or copying a file.
+
+By using Ansible playbooks, IT operations teams can automate infrastructure provisioning, configuration management, application deployment, and other operational tasks. Playbooks provide a concise and human-readable way to describe the desired automation workflows, making managing and scaling infrastructure configurations easier.
+
+# what-is-an-ansible-playbook 
+An Ansible® Playbook is a blueprint of automation tasks, which are IT actions executed with limited manual effort across an inventory of IT solutions. Playbooks tell Ansible what to do to which devices.
+nstead of manually applying the same action to hundreds or thousands of similar technologies across IT environments, executing a playbook automatically completes the same action for the specified type of inventory—such as a set of routers. Playbooks also serve as frameworks of prewritten code that developers can use ad-hoc or as a starting template.
+
+[root@server ~]# cat myplay.yaml
+---
+ - name: Finding uptime and free ram
+   hosts: all
+   tasks:
+   - name: Finding uptime
+     shell: uptime
+     register: up_time
+   - debug:
+       var: up_time.stdout_lines
+   - name: Finding RAM info
+     shell: free -g
+     register: ram_info
+   - debug:
+       var: ram_info.stdout_lines
+
+[root@server ~]#
+
+
+[root@server ~]# ansible-playbook /root/myplay.yaml
+
+PLAY [Finding uptime and free ram] ***********************************************
+
+TASK [Gathering Facts] ***********************************************************
+[WARNING]: Platform linux on host 192.168.10.159 is using the discovered Python
+interpreter at /usr/bin/python3.9, but future installation of another Python
+interpreter could change the meaning of that path. See
+https://docs.ansible.com/ansible-
+core/2.15/reference_appendices/interpreter_discovery.html for more information.
+ok: [192.168.10.159]
+[WARNING]: Platform linux on host 192.168.10.149 is using the discovered Python
+interpreter at /usr/bin/python3.9, but future installation of another Python
+interpreter could change the meaning of that path. See
+https://docs.ansible.com/ansible-
+core/2.15/reference_appendices/interpreter_discovery.html for more information.
+ok: [192.168.10.149]
+fatal: [192.168.10.150]: UNREACHABLE! => {"changed": false, "msg": "Failed to connect to the host via ssh: ssh: connect to host 192.168.10.150 port 22: No route to host", "unreachable": true}
+
+TASK [Finding uptime] ************************************************************
+changed: [192.168.10.149]
+changed: [192.168.10.159]
+
+TASK [debug] *********************************************************************
+ok: [192.168.10.159] => {
+    "up_time.stdout_lines": [
+        " 02:14:42 up 18 min,  1 user,  load average: 0.00, 0.00, 0.00"
+    ]
+}
+ok: [192.168.10.149] => {
+    "up_time.stdout_lines": [
+        " 02:14:42 up 18 min,  3 users,  load average: 0.08, 0.02, 0.01"
+    ]
+}
+
+TASK [Finding RAM info] **********************************************************
+changed: [192.168.10.159]
+changed: [192.168.10.149]
+
+TASK [debug] *********************************************************************
+ok: [192.168.10.159] => {
+    "ram_info.stdout_lines": [
+        "               total        used        free      shared  buff/cache   available",
+        "Mem:               0           0           0           0           0           0",
+        "Swap:              0           0           0"
+    ]
+}
+ok: [192.168.10.149] => {
+    "ram_info.stdout_lines": [
+        "               total        used        free      shared  buff/cache   available",
+        "Mem:               0           0           0           0           0           0",
+        "Swap:              0           0           0"
+    ]
+}
+
+PLAY RECAP ***********************************************************************
+192.168.10.149             : ok=5    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+192.168.10.150             : ok=0    changed=0    unreachable=1    failed=0    skipped=0    rescued=0    ignored=0
+192.168.10.159             : ok=5    changed=2    unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+
+[root@server ~]#
+
+
+[root@server ~]# cat play.yaml
+---
+ - hosts: all
+   tasks:
+   - yum:
+      name: wget
+      state: present
+   - yum:
+      name: vim
+      state: present
+[root@server ~]#
+
+
+##################33
+
+
+[root@server ~]# cat httpd.yaml
+---
+- name: Install and start httpd
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Install httpd package
+      yum:
+        name: httpd
+        state: present
+
+    - name: Start httpd service
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: Output httpd status
+      command: systemctl status httpd
+      register: httpd_status
+
+    - name: Display httpd status
+      debug:
+        msg: "{{ httpd_status.stdout }}"
+
+[root@server ~]#
+
